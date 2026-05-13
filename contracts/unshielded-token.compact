@@ -1,0 +1,146 @@
+pragma language_version >= 0.22;
+
+import CompactStandardLibrary;
+
+// ============================================================================
+// Unshielded Token Contract
+// ============================================================================
+// This contract demonstrates unshielded token operations on Midnight Network.
+// Unshielded tokens are transparent (non-private) and suitable for:
+// - Public token balances
+// - Non-sensitive transactions
+// - Simpler tutorial flows before adding private-state/shielded-token handling
+//
+// Operations:
+// - mintUnshieldedToken: Create new tokens
+// - sendUnshielded: Transfer tokens to users
+// - receiveUnshielded: Accept incoming tokens
+// ============================================================================
+
+// Public state: Track total supply and contract balance
+export ledger totalSupply: Uint<128>;
+export ledger contractBalance: Uint<128>;
+
+// Token color (unique identifier for this token type)
+export ledger tokenColor: Bytes<32>;
+
+// ============================================================================
+// Initialization Circuit
+// ============================================================================
+// Called once during deployment to initialize the token
+export circuit initialize(): [] {
+    // Create a unique token color using the contract address
+    tokenColor = tokenType(
+        disclose(pad(32, "unshielded-tutorial-token")),
+        disclose(kernel.self())
+    );
+    totalSupply = 0;
+    contractBalance = 0;
+}
+
+// ============================================================================
+// Minting Circuit
+// ============================================================================
+// Mint new unshielded tokens to the contract
+// Parameters:
+//   amount: Number of tokens to mint (up to 2^64 - 1)
+export circuit mint(amount: Uint<64>): [] {
+    // Mint tokens to the contract address
+    // mintUnshieldedToken creates the tokens and assigns them to the recipient
+    const disclosedAmount = disclose(amount);
+    mintUnshieldedToken(
+        disclose(pad(32, "unshielded-tutorial-token")),
+        disclosedAmount,
+        left<ContractAddress, UserAddress>(kernel.self())
+    );
+    
+    // Update state
+    const newTotalSupply = disclose(totalSupply) + (disclosedAmount as Uint<128>);
+    const newContractBalance = disclose(contractBalance) + (disclosedAmount as Uint<128>);
+    totalSupply = (newTotalSupply as Uint<128>);
+    contractBalance = (newContractBalance as Uint<128>);
+}
+
+// ============================================================================
+// Send Circuit
+// ============================================================================
+// Send unshielded tokens to a user address
+// Parameters:
+//   recipient: User address to receive tokens
+//   amount: Number of tokens to send
+export circuit sendTokens(recipient: UserAddress, amount: Uint<64>): [] {
+    // Disclose the amount for use in ledger operations
+    const disclosedAmount = disclose(amount);
+    
+    // Validate contract has sufficient balance
+    assert(contractBalance >= (disclosedAmount as Uint<128>), "Insufficient contract balance");
+    
+    // Send tokens to the recipient
+    sendUnshielded(
+        disclose(tokenColor),
+        disclosedAmount as Uint<128>,
+        right<ContractAddress, UserAddress>(disclose(recipient))
+    );
+    
+    // Update contract balance
+    const newBalance = disclose(contractBalance) - (disclosedAmount as Uint<128>);
+    contractBalance = (newBalance as Uint<128>);
+}
+
+// ============================================================================
+// Receive Circuit
+// ============================================================================
+// Receive unshielded tokens into the contract
+// Parameters:
+//   amount: Number of tokens to receive
+export circuit receiveTokens(amount: Uint<128>): [] {
+    // Disclose the amount for use in ledger operations
+    const disclosedAmount = disclose(amount);
+    
+    // Receive tokens from external source
+    receiveUnshielded(disclose(tokenColor), disclosedAmount);
+    
+    // Update contract balance
+    const newBalance = disclose(contractBalance) + disclosedAmount;
+    contractBalance = (newBalance as Uint<128>);
+}
+
+// ============================================================================
+// Optional demo circuit
+// ============================================================================
+// This is intentionally not used by the UI. It only updates tutorial ledger
+// counters and is kept here because the generated artifacts in managed/ were
+// produced from this contract version.
+export circuit burn(amount: Uint<64>): [] {
+    // Disclose the amount for use in ledger operations
+    const disclosedAmount = disclose(amount);
+    
+    // Validate contract has sufficient balance
+    assert(contractBalance >= (disclosedAmount as Uint<128>), "Insufficient balance to burn");
+    
+    // Send to burn address (default Bytes<32> represents NIGHT burn)
+    // For custom token, we just reduce the balance without actual send
+    const newBalance = disclose(contractBalance) - (disclosedAmount as Uint<128>);
+    const newSupply = disclose(totalSupply) - (disclosedAmount as Uint<128>);
+    contractBalance = (newBalance as Uint<128>);
+    totalSupply = (newSupply as Uint<128>);
+}
+
+// ============================================================================
+// Query Functions (View-only, no state changes)
+// ============================================================================
+
+// Get total supply
+export circuit getTotalSupply(): Uint<128> {
+    return disclose(totalSupply);
+}
+
+// Get contract balance
+export circuit getContractBalance(): Uint<128> {
+    return disclose(contractBalance);
+}
+
+// Get token color
+export circuit getTokenColor(): Bytes<32> {
+    return disclose(tokenColor);
+}

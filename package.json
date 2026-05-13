@@ -1,0 +1,32 @@
+{
+  "name": "midnight-unshielded-token-dapp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Beginner-friendly unshielded token dApp for Midnight: Compact contract, React UI, local API adapter, tutorial, and run docs.",
+  "type": "module",
+  "scripts": {
+    "setup": "npm run frontend:install",
+    "doctor": "node scripts/doctor.mjs",
+    "compile:contract": "compact compile contracts/unshielded-token.compact contracts/managed/unshielded-token",
+    "check:artifacts": "node scripts/check-artifacts.mjs",
+    "frontend:install": "npm --prefix frontend install",
+    "frontend:dev": "npm --prefix frontend run dev",
+    "frontend:build": "npm --prefix frontend run build",
+    "frontend:preview": "npm --prefix frontend run preview",
+    "api:dev": "node scripts/local-api.mjs",
+    "api:reset": "node scripts/reset-local-api.mjs",
+    "api:smoke": "node scripts/smoke-local-api.mjs",
+    "check": "npm run check:artifacts && npm run frontend:build",
+    "start-proof-server": "docker run --rm -p 6300:6300 midnightntwrk/proof-server:8.0.3 -- midnight-proof-server -v",
+    "deploy:local": "node scripts/deploy-local-guide.mjs",
+    "deploy:preprod": "node scripts/deploy-preprod-guide.mjs"
+  },
+  "keywords": [
+    "midnight",
+    "compact",
+    "unshielded-token",
+    "react",
+    "dapp"
+  ],
+  "license": "MIT"
+}

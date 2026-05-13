@@ -1,0 +1,29 @@
+# dependencies
+node_modules/
+frontend/node_modules/
+
+# build output
+frontend/dist/
+dist/
+.vite/
+*.tsbuildinfo
+
+# local runtime state
+.cache/
+.env
+.env.*
+!.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# deployment secrets / local-only files
+deployment/
+*.seed
+*.key
+*.secret
+
+# logs / OS files
+*.log
+.DS_Store
+__MACOSX/
