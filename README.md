@@ -1,17 +1,19 @@
 # Midnight Unshielded Token DApp
 
-A beginner-friendly Midnight developer tutorial project for unshielded token operations.
+A beginner-friendly Midnight developer project for learning unshielded token operations on Midnight.
 
-It includes:
+This repository demonstrates a simple unshielded token flow with a React frontend and Compact contract.
+
+Included in this project:
 
 - A Compact contract for unshielded token operations.
 - Generated contract artifacts under `contracts/managed/unshielded-token/`.
-- A React + Vite frontend with Midnight Lace wallet detection.
-- A local API adapter for mint/send/receive/state UI testing.
-- A written tutorial draft in `tutorial.md`.
-- Mac and Windows setup instructions.
+- A React + Vite frontend with Midnight wallet detection.
+- A local API adapter for mint/send/receive and UI testing.
+- A written walkthrough in `tutorial.md`.
+- macOS and Windows setup instructions.
 
-The stable ready-to-run path is the local API adapter flow. It lets you review the complete UI, wallet panel, mint/send/receive forms, balance display, activity log, and toast notifications without editing source files.
+The project includes a local runnable flow for testing the frontend experience, including wallet interaction, minting, sending, receiving, balance display, and activity updates.
 
 ## Project structure
 
@@ -256,25 +258,34 @@ Never commit:
 
 These are already covered by `.gitignore`.
 
-## Bounty checklist
+`tutorial.md` is included as supporting documentation for the implementation and walkthrough.
 
-Before publishing:
+## Unshielded vs Shielded Tokens
 
-```bash
-npm run doctor
-npm run check:artifacts
-npm run frontend:build
-```
+### Unshielded Tokens
+- Easier to test and integrate
+- Transaction activity is visible
+- Good starting point for learning Midnight token flows
 
-Then capture screenshots of:
+### Shielded Tokens
+- Better privacy guarantees
+- Hidden balances and transfers
+- More suitable for privacy-sensitive applications
 
-- Contract artifacts present or contract compile success.
-- Frontend build success.
-- Wallet detected/connected.
-- Mint success toast.
-- Send success toast.
-- Receive success toast.
-- Final token state.
-- Local Docker/proof server running, if you use live deployment.
+This project focuses on unshielded tokens to keep the implementation simpler and easier for new contributors to understand.
 
-Use `tutorial.md` as the base article and publish it on Dev.to or your chosen platform.
+## Suggested Screenshots
+
+Recommended screenshots for reviewers:
+
+- Wallet connected
+  <img width="507" height="424" alt="Screenshot 2026-05-14 at 12 23 27 AM" src="https://github.com/user-attachments/assets/235e363b-a2ab-4f3e-9909-be4d0f9688df" />
+
+- Mint flow
+- <img width="856" height="520" alt="Screenshot 2026-05-14 at 12 24 23 AM" src="https://github.com/user-attachments/assets/88a5ecbe-5e57-4d24-8723-bad0b3410ff0" />
+
+-Operation Log
+<img width="1440" height="880" alt="Screenshot 2026-05-14 at 12 25 42 AM" src="https://github.com/user-attachments/assets/97d405e5-42f1-45b7-bbf7-98a4d64e28e1" />
+
+- Token balance display
+- <img width="1440" height="880" alt="Screenshot 2026-05-14 at 12 25 13 AM" src="https://github.com/user-attachments/assets/e399047d-bbef-4b45-a13f-e35e8cead68a" />
